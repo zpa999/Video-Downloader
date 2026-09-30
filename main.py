@@ -49,6 +49,12 @@ class DownloadThread(QThread):
             'outtmpl': '%(title)s.%(ext)s',
             'progress_hooks': [my_hook],
             'nocolor': True,  # 콘솔 색상 코드 비활성화
+            'windowsfilenames': True,  # 파일명 특수문자 에러 방지
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'ios', 'web']
+                }
+            },
         }
 
         try:
