@@ -5,7 +5,7 @@
 
 #define MyAppName "유튜브 다운로더"
 #define MyAppNameEng "YoutubeDownloader"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "myproject"
 #define MyAppExeName "YoutubeDownloader.exe"
 #define MyAppSourceDir "dist\YoutubeDownloader"

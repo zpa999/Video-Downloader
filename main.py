@@ -1,6 +1,7 @@
 import sys
 import re
 import yt_dlp
+import imageio_ffmpeg
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QProgressBar, QLabel
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -45,16 +46,21 @@ class DownloadThread(QThread):
                 self.status_signal.emit("다운로드 완료! 파일 처리 중...")
 
         ydl_opts = {
-            'format': 'best',
+            # 호환성 높은 mp4(H.264 + AAC) 우선, 불가 시 가능한 최선의 포맷으로 대체
+            'format': 'bv*[vcodec^=avc1]+ba[acodec^=mp4a]/bv*[ext=mp4]+ba[ext=m4a]/bv*+ba/b',
+            'merge_output_format': 'mp4',
             'outtmpl': '%(title)s.%(ext)s',
             'progress_hooks': [my_hook],
             'nocolor': True,  # 콘솔 색상 코드 비활성화
             'windowsfilenames': True,  # 파일명 특수문자 에러 방지
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'ios', 'web']
-                }
-            },
+            # player_client를 강제로 지정하지 않음: android/ios 클라이언트는
+            # PO Token이 없으면 403 Forbidden이 발생하므로 yt-dlp 기본값을 사용
+            # YouTube 추출에는 JS 런타임이 필요 (deno 기본, 없으면 node 사용)
+            'js_runtimes': {'deno': {}, 'node': {}},
+            # 영상+음원 병합용 ffmpeg (imageio-ffmpeg에 내장된 바이너리 사용)
+            'ffmpeg_location': imageio_ffmpeg.get_ffmpeg_exe(),
+            'retries': 5,
+            'fragment_retries': 5,
         }
 
         try:

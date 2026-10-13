@@ -37,7 +37,7 @@ PyQt5와 yt-dlp를 기반으로 제작된 직관적이고 깔끔한 데스크톱
 
 ### 1. 사전 요구사항
 * [Python 3.10](https://www.python.org/) 이상
-* (선택) 고화질 영상/오디오 병합을 위한 [ffmpeg](https://ffmpeg.org/) 설치 권장
+* ffmpeg는 `imageio-ffmpeg`로 자동 포함되므로 별도 설치가 필요 없습니다
 
 ### 2. 패키지 설치
 ```bash
@@ -64,7 +64,7 @@ pyinstaller --clean YoutubeDownloader.spec
 ```powershell
 & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 ```
-컴파일 완료 시 `Output/` 폴더에 `유튜브다운로더_Setup_v1.0.1.exe` 파일이 생성됩니다.
+컴파일 완료 시 `Output/` 폴더에 `유튜브다운로더_Setup_v1.0.3.exe` 파일이 생성됩니다.
 
 ---
 
@@ -73,7 +73,7 @@ pyinstaller --clean YoutubeDownloader.spec
 ```text
 myproject/
 ├── Output/                      # Inno Setup으로 생성된 최종 윈도우 설치 파일 (.exe)
-│   └── 유튜브다운로더_Setup_v1.0.1.exe
+│   └── 유튜브다운로더_Setup_v1.0.3.exe
 ├── dist/                        # PyInstaller 빌드 결과물
 ├── main.py                      # 메인 소스 코드 (PyQt5 GUI 및 다운로드 로직)
 ├── setup.iss                    # Inno Setup 패키징 스크립트
@@ -85,6 +85,14 @@ myproject/
 
 ## 📝 릴리즈 노트
 
+* **v1.0.3 (2026-10-13)**
+  * 다운로드 포맷을 호환성 높은 mp4(H.264 + AAC)로 변경 (기존 webm 출력 개선)
+  * 병합 결과 컨테이너를 mp4로 고정(`merge_output_format`)
+* **v1.0.2 (2026-10-13)**
+  * 유튜브 `HTTP Error 403: Forbidden` 근본 해결: PO Token이 필요한 `android`/`ios` 클라이언트 강제 지정 제거
+  * yt-dlp 2026.8.19로 업데이트 및 JS 런타임(deno/node) 지정
+  * 영상+음원 분리 제공 방식에 대응(`bv*+ba/b`), ffmpeg(`imageio-ffmpeg`) 내장으로 별도 설치 불필요
+  * 다운로드 재시도(`retries`) 옵션 추가
 * **v1.0.1 (2026-09-30)**
   * 유튜브 `HTTP Error 403: Forbidden` 차단 우회 옵션(`extractor_args`) 추가
   * 파일명 특수문자 호환성 옵션(`windowsfilenames`) 추가
